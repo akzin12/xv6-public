@@ -27,6 +27,7 @@ main(void)
   cprintf("\ncpu%d: starting Spring 2026 xv6\n\n", cpunum());
   ioapicinit();    // another interrupt controller
   consoleinit();   // console hardware
+  mouseinit();     // mouse
   uartinit();      // serial port
   pinit();         // process table
   binit();         // buffer cache

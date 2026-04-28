@@ -2,6 +2,7 @@
 #include "types.h"
 struct stat;
 struct rtcdate;
+struct mouse_event;
 
 // system calls
 int fork(void);
@@ -25,6 +26,7 @@ int getpid(void);
 char* sbrk(uint64);
 int sleep(int);
 int uptime(void);
+int mouseread(struct mouse_event*);
 
 // ulib.c
 int stat(char*, struct stat*);

@@ -10,6 +10,7 @@ struct sleeplock;
 struct stat;
 struct superblock;
 struct trapframe;
+struct mouse_event;
 
 //entry.S
 void            wrmsr(uint msr, uint64 val);
@@ -27,6 +28,11 @@ void            consoleinit(void);
 void            cprintf(char*, ...);
 void            consoleintr(int(*)(void));
 void            panic(char*) __attribute__((noreturn));
+
+// mouse.c
+void            mouseinit(void);
+void            mouseintr(void);
+int             mouseread(struct mouse_event*);
 
 // exec.c
 int             exec(char*, char**);

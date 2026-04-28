@@ -5,6 +5,7 @@
 #include "memlayout.h"
 #include "mmu.h"
 #include "proc.h"
+#include "mouse.h" 
 
 int
 sys_fork(void)
@@ -86,4 +87,11 @@ sys_uptime(void)
   xticks = ticks;
   release(&tickslock);
   return xticks;
+}
+
+addr_t sys_mouseread(void){
+  struct mouse_event *ev;
+  if (argptr(0, (char**)&ev, sizeof(*ev)) < 0)
+    return -1;
+  return mouseread(ev);
 }
