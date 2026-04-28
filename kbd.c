@@ -15,6 +15,8 @@ kbdgetc(void)
   st = inb(KBSTATP);
   if((st & KBS_DIB) == 0)
     return -1;
+  if(st & 0x20) // bit 5: mouse data, not kbd data
+    return -1;
   data = inb(KBDATAP);
 
   if(data == 0xE0){
