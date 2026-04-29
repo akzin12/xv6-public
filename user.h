@@ -1,8 +1,13 @@
 #pragma once
 #include "types.h"
+
 struct stat;
 struct rtcdate;
 struct mouse_event;
+struct ulock {
+  int locked; // 0: unlocked, 1: locked
+};
+
 
 // system calls
 int fork(void);
@@ -28,7 +33,12 @@ int sleep(int);
 int uptime(void);
 int mouseread(struct mouse_event*);
 int ioctl(int, int, int);
-int spawn(void);
+int clone(void *stack, int size, void *fn, void *arg);
+int thread_create(void (*fn)(void*), void *arg);
+int thread_join(void);
+void ulockinit(struct ulock *lk);
+void ulock_acquire(struct ulock *lk);
+void ulock_release(struct ulock *lk);
 
 // ulib.c
 int stat(char*, struct stat*);

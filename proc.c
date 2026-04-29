@@ -168,8 +168,53 @@ fork(void)
   return pid;
 }
 
-int spawn(void) {
-  return -1; // not implemented yet
+// Create a new thread sharing the current process's address space.
+// stack = userspace stack memory, size = stack size in bytes.
+// Returns thread pid to parent, 0 to child.
+int
+clone(void *stack, int size, void *fn, void *arg)
+{
+  int i, pid;
+  struct proc *np;
+
+  uint64 zero = 0;
+
+  // Allocate process for thread.
+  if((np = allocproc()) == 0)
+    return -1;
+
+  // Copy state from parent thread.
+  np->pgdir  = proc->pgdir; // share address space with parent
+  np->sz     = proc->sz;
+  np->parent = proc;
+  *np->tf    = *proc->tf;
+
+  // syscall_trapret uses sysretq: RIP <- rcx, RFLAGS <- r11
+  np->tf->rcx = (addr_t)fn;
+  np->tf->rdi = (uint64)arg;
+
+  // rsp one word below stack top; write null return addr via copyout (safe user-space write)
+  np->tf->rsp = (addr_t)((char*)stack + size - 8);
+  copyout(np->pgdir, np->tf->rsp, &zero, sizeof(zero));
+
+  // File descriptors - same as fork, threads share open files
+  for(i = 0; i < NOFILE; i++)
+    if(proc->ofile[i])
+      np->ofile[i] = filedup(proc->ofile[i]);
+  np->cwd = idup(proc->cwd);
+
+  safestrcpy(np->name, proc->name, sizeof(proc->name));
+
+  // remember the stack so we can free it on exit
+  np->ustack = stack;
+
+  pid = np->pid;
+
+  __sync_synchronize();
+  np->state = RUNNABLE;
+
+  // cprintf("from parent thread with pid %d: newly cloned thread pid: %d\n", proc->pid, pid);
+  return pid;
 }
 
 //PAGEBREAK!

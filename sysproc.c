@@ -96,6 +96,12 @@ addr_t sys_mouseread(void){
   return mouseread(ev);
 }
 
-addr_t sys_spawn(void) {
-  return spawn();
+addr_t sys_clone(void) {
+  void *stack, *fn, *arg;
+  int size;
+  if(argaddr(0, (addr_t*)&stack) < 0) return -1;
+  if(argint(1, &size) < 0) return -1;
+  if(argaddr(2, (addr_t*)&fn) < 0) return -1;
+  if(argaddr(3, (addr_t*)&arg) < 0) return -1;
+  return clone(stack, size, fn, arg);
 }
