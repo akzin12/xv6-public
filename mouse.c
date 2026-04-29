@@ -58,12 +58,12 @@ void mouseinit(void) {
 }
 
 void mouseintr(void) {
-  static uchar packet[3];
+  static uchar packet[3]; // mouse packets: 3 bytes
   static int byte_count = 0;
   struct mouse_event event;
 
   uchar status = inb(0x64);
-  if (!(status & 0x1) || !(status & 0x20))
+  if (!(status & 0x1) || !(status & 0x20)) // no data or not from mouse
     return;
 
   packet[byte_count] = inb(0x60);
@@ -78,10 +78,10 @@ void mouseintr(void) {
 
   byte_count = 0;
 
-  if (packet[0] & 0xC0)
+  if (packet[0] & 0xC0) // x y overflow, ignore packet
     return;
 
-  event.buttons = packet[0] & 0x07;
+  event.buttons = packet[0] & 0x07; // bits 0-2: left, right, middle buttons
   event.x =  (char)packet[1];    // (char) cast handles sign extension automatically
   event.y =  (char)packet[2];    // negate inline, no separate line needed
 
@@ -96,11 +96,11 @@ void mouseintr(void) {
 
 int mouseread(struct mouse_event *ev) {
   acquire(&mousedev.lock);
-  while (mousedev.head == mousedev.tail) {
+  while (mousedev.head == mousedev.tail) { // buffer empty
     sleep(&mousedev, &mousedev.lock);
   }
   *ev = mousedev.buf[mousedev.head];
-  mousedev.head = (mousedev.head + 1) % MOUSE_BUF;
+  mousedev.head = (mousedev.head + 1) % MOUSE_BUF; //circular buffer
   release(&mousedev.lock);
   return 0;
 }
