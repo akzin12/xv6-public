@@ -95,3 +95,7 @@ addr_t sys_mouseread(void){
     return -1;
   return mouseread(ev);
 }
+
+addr_t sys_spawn(void) {
+  return spawn();
+}

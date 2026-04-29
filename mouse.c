@@ -53,10 +53,8 @@ void mouseinit(void) {
   outb(0x60, 0xF4);          // mouse command: enable data reporting
   while (!(inb(0x64) & 0x1));
   uchar ack = inb(0x60);     // should be 0xFA
-  cprintf("mouse ack: 0x%x\n", ack);  // temporary: should print 0xfa
 
   ioapicenable(IRQ_MOUSE, 0);
-  cprintf("mouseinit done\n");  // temporary
 }
 
 void mouseintr(void) {
@@ -85,7 +83,7 @@ void mouseintr(void) {
 
   event.buttons = packet[0] & 0x07;
   event.x =  (char)packet[1];    // (char) cast handles sign extension automatically
-  event.y = -(char)packet[2];    // negate inline, no separate line needed
+  event.y =  (char)packet[2];    // negate inline, no separate line needed
 
   acquire(&mousedev.lock);
   mousedev.buf[mousedev.tail] = event;

@@ -124,6 +124,7 @@ extern addr_t sys_write(void);
 extern addr_t sys_uptime(void);
 extern addr_t sys_ioctl(void);
 extern addr_t sys_mouseread(void);
+extern addr_t sys_spawn(void);
 
 // PAGEBREAK!
 static addr_t (*syscalls[])(void) = {
@@ -150,6 +151,7 @@ static addr_t (*syscalls[])(void) = {
 [SYS_close]   sys_close,
 [SYS_ioctl]   sys_ioctl,
 [SYS_mouseread] sys_mouseread,
+[SYS_spawn]   sys_spawn,
 };
 
 void

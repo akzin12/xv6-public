@@ -1,5 +1,5 @@
 KERNOBJS = \
-	bio.o console.o mouse.o exec.o file.o fs.o ide.o ioapic.o kalloc.o kbd.o lapic.o \
+	bio.o vga.o display.o console.o mouse.o exec.o file.o fs.o ide.o ioapic.o kalloc.o kbd.o lapic.o \
   log.o main.o mp.o pipe.o proc.o sleeplock.o spinlock.o string.o swtch.o \
   syscall.o sysfile.o sysproc.o trapasm.o trap.o uart.o vectors.o vm.o \
 #
@@ -94,7 +94,7 @@ kernelmemfs: $(MEMFSOBJS) entry.o entryother initcode kernel.ld fs.img
 vectors.S: vectors.pl
 	perl vectors.pl > vectors.S
 
-ULIB = ulib.o usys.o printf.o umalloc.o
+ULIB = ulib.o usys.o printf.o umalloc.o thread.o
 
 _%: %.o $(ULIB) user.ld
 	$(LD) $(LDFLAGS) -n -N -T user.ld -e main -Ttext 0x1000 -o $@ $< $(ULIB)
@@ -119,6 +119,7 @@ mkfs: mkfs.c fs.h
 UPROGS= \
 	_cat _echo _forktest _grep _init _kill _ln _ls _mkdir \
 	_rm _sh _stressfs _usertests _wc _zombie _mousetest \
+	_threadtest \
 #
 
 fs.img: mkfs README $(UPROGS)
@@ -156,7 +157,7 @@ QEMUGDB = $(shell if $(QEMU) -help | grep -q '^-gdb'; \
 ifndef CPUS
 CPUS := 2
 endif
-QEMUOPTS = -cpu qemu64,+rdtscp -nic none -hda xv6.img -hdb fs.img -smp sockets=$(CPUS) -m 512 $(QEMUEXTRA) -display cocoa
+QEMUOPTS = -cpu qemu64,+rdtscp -nic none -hda xv6.img -hdb fs.img -smp sockets=$(CPUS) -m 512 $(QEMUEXTRA) 
 
 qemu: fs.img xv6.img
 	$(QEMU) -serial mon:stdio $(QEMUOPTS)

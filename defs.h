@@ -119,6 +119,7 @@ int             pipewrite(struct pipe*, char*, int);
 // proc.c
 void            exit(void);
 int             fork(void);
+int             spawn(void*, int, void*, void*);    
 int             growproc(int64);
 int             kill(int);
 void            pinit(void);

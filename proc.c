@@ -168,6 +168,10 @@ fork(void)
   return pid;
 }
 
+int spawn(void) {
+  return -1; // not implemented yet
+}
+
 //PAGEBREAK!
 // Exit the current process.  Does not return.
 // An exited process remains in the zombie state
@@ -236,7 +240,15 @@ wait(void)
         pid = p->pid;
         kfree(p->kstack);
         p->kstack = 0;
-        freevm(p->pgdir);
+
+        // Don't freevm for threads — they share pgdir with parent
+        if(p->ustack != 0) {
+          p->pgdir  = 0;      // clear reference, do NOT free
+          p->ustack = 0;
+        } else {
+          freevm(p->pgdir);   // real process — free normally
+        }
+
         p->pid = 0;
         p->parent = 0;
         p->name[0] = 0;
