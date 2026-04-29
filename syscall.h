@@ -20,4 +20,5 @@
 #define SYS_link   19
 #define SYS_mkdir  20
 #define SYS_close  21
-#define SYS_mouseread  22  
+#define SYS_ioctl  22
+#define SYS_mouseread  23

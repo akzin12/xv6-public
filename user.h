@@ -27,6 +27,7 @@ char* sbrk(uint64);
 int sleep(int);
 int uptime(void);
 int mouseread(struct mouse_event*);
+int ioctl(int, int, int);
 
 // ulib.c
 int stat(char*, struct stat*);

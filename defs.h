@@ -29,10 +29,10 @@ void            cprintf(char*, ...);
 void            consoleintr(int(*)(void));
 void            panic(char*) __attribute__((noreturn));
 
-// mouse.c
-void            mouseinit(void);
-void            mouseintr(void);
-int             mouseread(struct mouse_event*);
+// display.c
+void            displayinit(void);
+int             displayioctl(struct file *, int, int);
+int             displaywrite(struct inode*, uint, char*, int);
 
 // exec.c
 int             exec(char*, char**);
@@ -45,6 +45,7 @@ void            fileinit(void);
 int             fileread(struct file*, char*, int n);
 int             filestat(struct file*, struct stat*);
 int             filewrite(struct file*, char*, int n);
+int             fileioctl(struct file*, int, int);
 
 // fs.c
 void            readsb(int dev, struct superblock *sb);
@@ -98,6 +99,11 @@ void            initlog(int dev);
 void            log_write(struct buf*);
 void            begin_op();
 void            end_op();
+
+// mouse.c
+void            mouseinit(void);
+void            mouseintr(void);
+int             mouseread(struct mouse_event*);
 
 // mp.c
 extern int      ismp;

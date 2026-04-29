@@ -31,9 +31,10 @@ struct inode {
 struct devsw {
   int (*read)(struct inode*, uint, char*, int);
   int (*write)(struct inode*, uint, char*, int);
+  int (*ioctl)(struct file*, int, int);
 };
 
 extern struct devsw devsw[];
 
 #define CONSOLE 1
-
+#define DISPLAY 2

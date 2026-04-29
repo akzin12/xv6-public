@@ -89,6 +89,17 @@ sys_write(void)
 }
 
 int
+sys_ioctl(void)
+{
+  struct file *f;
+  int fd, param, value;
+
+  if(argfd(0, &fd, &f) < 0 || argint(1, &param) < 0 || argint(2, &value) < 0)
+    return -1;
+  return fileioctl(f, param, value);
+}
+
+int
 sys_close(void)
 {
   int fd;

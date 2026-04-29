@@ -19,6 +19,11 @@ main(void)
   dup(0);  // stdout
   dup(0);  // stderr
 
+  if(open("display", O_RDWR) < 0){
+    mknod("display", 2, 1); // the second argument is DISPLAY = 2
+    open("display", O_RDWR);
+  }
+
   for(;;){
     printf(1, "init: starting sh\n");
     pid = fork();
