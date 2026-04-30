@@ -505,6 +505,7 @@ void timer_thread(void *arg) {
       }
       ulock_release(&game_lock);
     }
+    sleep(10); // sleep to reduce CPU usage
   }
   exit();
 }
@@ -518,6 +519,7 @@ void input_thread(void *arg) {
     handle_click(ev);
     dirty = 1;
     ulock_release(&game_lock);
+    sleep(1); // small delay to prevent overwhelming the CPU with input events
   }
   exit();
 }
